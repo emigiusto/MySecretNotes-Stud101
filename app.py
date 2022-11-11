@@ -138,18 +138,18 @@ def register():
         password = request.form['password']
         db = connect_db()
         c = db.cursor()
-        c.execute("SELECT * FROM users WHERE password = ?;", (password))
+        c.execute("SELECT * FROM users WHERE password = ?", (password))
         if(len(c.fetchall())>0):
             errored = True
             passworderror = "That password is already in use by someone else!"
 
-        c.execute("SELECT * FROM users WHERE username = ?;", (username))
+        c.execute("SELECT * FROM users WHERE username = ?", (username))
         if(len(c.fetchall())>0):
             errored = True
             usererror = "That username is already in use by someone else!"
 
         if(not errored):
-            c.execute("INSERT INTO users(id,username,password) VALUES(null,?,?);", (username, password))
+            c.execute("INSERT INTO users(id,username,password) VALUES(null,?,?)", (username, password))
             db.commit()
             db.close()
             return f"""<html>
