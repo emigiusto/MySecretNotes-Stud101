@@ -74,8 +74,8 @@ def notes():
             db = connect_db()
             c = db.cursor()
             sessionUserId = str(session['userid'])
-            time = time.strftime('%Y-%m-%d %H:%M:%S')
-            c.execute("INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,?,?,?,?);", (sessionUserId, time ,note, random.randrange(1000000000, 9999999999)) )
+            time2 = time.strftime('%Y-%m-%d %H:%M:%S')
+            c.execute("INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,?,?,?,?);", (sessionUserId, time2 ,note, random.randrange(1000000000, 9999999999)) )
             db.commit()
             db.close()
         elif request.form['submit_button'] == 'import note':
