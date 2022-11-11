@@ -79,17 +79,17 @@ def notes():
             db.commit()
             db.close()
         elif request.form['submit_button'] == 'import note':
-            noteid = request.form['noteid']
+            noteid1 = str(request.form['noteid'])
             db = connect_db()
             c = db.cursor()
-            c.execute("SELECT * from NOTES where publicID = ?", (noteid) )
+            c.execute("SELECT * from NOTES where publicID = ?", noteid1[0])
             result = c.fetchall()
             usersessionid = str(session['userid'])
-            r2 = row[2]
-            r3 = row[3]
-            r4 = row[4]
             if(len(result)>0):
                 row = result[0]
+                r2 = row[2]
+                r3 = row[3]
+                r4 = row[4]
                 c.execute("INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,?,?,?,?);", (usersessionid, r2, r3, r4))
             else:
                 importerror="No such note with that ID!"
@@ -104,7 +104,6 @@ def notes():
     print(notes)
     
     return render_template('notes.html',notes=notes,importerror=importerror)
-
 
 @app.route("/login/", methods=('GET', 'POST'))
 def login():
@@ -188,3 +187,47 @@ if __name__ == "__main__":
         print("'python3 app.py' (to start on port 5000)")
         print("or")
         print("'sudo python3 app.py 80' (to run on any other port)")
+
+
+@app.route("/admin/", methods=('GET', 'POST'))
+@login_required
+def admin():
+    importerror=""
+    #Posting a new note:
+    if request.method == 'POST':
+        if request.form['submit_button'] == 'add note':
+            note = request.form['noteinput']
+            db = connect_db()
+            c = db.cursor()
+            sessionUserId = str(session['userid'])
+            time2 = time.strftime('%Y-%m-%d %H:%M:%S')
+            c.execute("INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,?,?,?,?);", (sessionUserId, time2 ,note, random.randrange(1000000000, 9999999999)) )
+            db.commit()
+            db.close()
+        elif request.form['submit_button'] == 'import note':
+            noteid1 = str(request.form['noteid'])
+            print(noteid1)
+            db = connect_db()
+            c = db.cursor()
+            c.execute("SELECT * from NOTES where publicID = ?", (noteid1) )
+            result = c.fetchall()
+            usersessionid = str(session['userid'])
+            r2 = row[2]
+            r3 = row[3]
+            r4 = row[4]
+            if(len(result)>0):
+                row = result[0]
+                c.execute("INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,?,?,?,?);", (usersessionid, r2, r3, r4))
+            else:
+                importerror="No such note with that ID!"
+            db.commit()
+            db.close()
+    
+    db = connect_db()
+    c = db.cursor()
+    sessionId = str(session['userid'])
+    c.execute("SELECT * FROM notes WHERE assocUser = ?", sessionId)
+    notes = c.fetchall()
+    print(notes)
+    
+    return render_template('notes.html',notes=notes,importerror=importerror)
