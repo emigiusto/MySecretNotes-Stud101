@@ -73,7 +73,7 @@ def notes():
             note = request.form['noteinput']
             db = connect_db()
             c = db.cursor()
-            sessionUserId = session['userid']
+            sessionUserId = str(session['userid'])
             time = time.strftime('%Y-%m-%d %H:%M:%S')
             c.execute("INSERT INTO notes(id,assocUser,dateWritten,note,publicID) VALUES(null,?,?,?,?);", (sessionUserId, time ,note, random.randrange(1000000000, 9999999999)) )
             db.commit()
@@ -84,7 +84,7 @@ def notes():
             c = db.cursor()
             c.execute("SELECT * from NOTES where publicID = ?", (noteid) )
             result = c.fetchall()
-            usersessionid = session['userid']
+            usersessionid = str(session['userid'])
             r2 = row[2]
             r3 = row[3]
             r4 = row[4]
@@ -98,8 +98,8 @@ def notes():
     
     db = connect_db()
     c = db.cursor()
-    session = session['userid']
-    c.execute("SELECT * FROM notes WHERE assocUser = ?", (session))
+    sessionId = str(session['userid'])
+    c.execute("SELECT * FROM notes WHERE assocUser = ?", sessionId)
     notes = c.fetchall()
     print(notes)
     
@@ -116,8 +116,8 @@ def login():
         c = db.cursor()
         c.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, password))
         result = c.fetchall()
-
         if len(result) > 0:
+            print(result[0])
             session.clear()
             session['logged_in'] = True
             session['userid'] = result[0][0]
