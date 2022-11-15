@@ -2,8 +2,9 @@ var http = require('http');
 const axios = require('axios');
 const API_Key = 'cf9c2c22-086d-4227-883a-878bfe22aad0';
 
+const hostname = 'localhost';
+const port = 3005;
 http.createServer(function (req, res) {
-  let newDate = new Date();
   res.writeHead(200, {'Content-Type': 'text/plain'});
   
   let response = null;
@@ -27,7 +28,10 @@ http.createServer(function (req, res) {
     }
   });
   
-}).listen(3001);
+}).listen(port,hostname,()=>{
+  // Callback 
+  console.log(`Server running at http://${hostname}:${port}/`);
+})
 
 
 
