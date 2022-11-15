@@ -1,7 +1,7 @@
 // Quick start, create an active ftp server.
 const FtpSrv = require('ftp-srv');
 
-const port=21;
+const port = 21;
 const ftpServer = new FtpSrv({
     url: "ftp://0.0.0.0:" + port,
     anonymous: true
